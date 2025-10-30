@@ -1,0 +1,1111 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++  <meta charset="UTF-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>OpenLearn | Explore Reliable Lessons</title>
++  <style>
++    :root {
++      --bg: #f5f7fb;
++      --bg-alt: #ffffff;
++      --text: #1f2933;
++      --accent: #3b82f6;
++      --shadow: rgba(15, 23, 42, 0.1);
++    }
++
++    [data-theme="dark"] {
++      --bg: #111827;
++      --bg-alt: #1f2937;
++      --text: #e5e7eb;
++      --accent: #60a5fa;
++      --shadow: rgba(15, 23, 42, 0.5);
++    }
++
++    * {
++      box-sizing: border-box;
++    }
++
++    body {
++      margin: 0;
++      font-family: "Inter", "Segoe UI", sans-serif;
++      background: var(--bg);
++      color: var(--text);
++      min-height: 100vh;
++      display: flex;
++      flex-direction: column;
++      transition: background 0.3s ease, color 0.3s ease;
++    }
++
++    header {
++      background: var(--bg-alt);
++      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
++      padding: 1rem 1.5rem;
++      display: flex;
++      align-items: center;
++      gap: 1rem;
++      position: sticky;
++      top: 0;
++      z-index: 20;
++      box-shadow: 0 2px 10px var(--shadow);
++    }
++
++    .brand {
++      font-size: 1.4rem;
++      font-weight: 700;
++      color: var(--accent);
++      margin-right: auto;
++      display: flex;
++      align-items: center;
++      gap: 0.4rem;
++    }
++
++    .brand span {
++      color: var(--text);
++    }
++
++    .search-input {
++      flex: 1 1 320px;
++      max-width: 520px;
++      padding: 0.65rem 1rem;
++      border-radius: 999px;
++      border: 1px solid rgba(15, 23, 42, 0.15);
++      background: var(--bg);
++      color: var(--text);
++      outline: none;
++      transition: border 0.2s ease;
++    }
++
++    .search-input:focus {
++      border-color: var(--accent);
++    }
++
++    .sr-only {
++      position: absolute;
++      width: 1px;
++      height: 1px;
++      padding: 0;
++      margin: -1px;
++      overflow: hidden;
++      clip: rect(0, 0, 0, 0);
++      white-space: nowrap;
++      border: 0;
++    }
++
++    .toggle-btn,
++    .menu-btn {
++      background: var(--bg);
++      border: 1px solid rgba(15, 23, 42, 0.15);
++      border-radius: 999px;
++      color: var(--text);
++      padding: 0.5rem 0.9rem;
++      cursor: pointer;
++      font-size: 0.95rem;
++      display: flex;
++      align-items: center;
++      gap: 0.4rem;
++      transition: background 0.2s ease, transform 0.2s ease;
++    }
++
++    .toggle-btn:hover,
++    .menu-btn:hover {
++      background: var(--bg-alt);
++      transform: translateY(-1px);
++    }
++
++    .menu-btn {
++      display: none;
++    }
++
++    .layout {
++      display: grid;
++      grid-template-columns: 260px 1fr 320px;
++      gap: 1.5rem;
++      padding: 1.5rem;
++      flex: 1;
++      transition: all 0.3s ease;
++    }
++
++    aside.sidebar {
++      background: var(--bg-alt);
++      border-radius: 1rem;
++      box-shadow: 0 10px 30px var(--shadow);
++      padding: 1.2rem;
++      position: relative;
++      display: flex;
++      flex-direction: column;
++      gap: 1rem;
++      height: fit-content;
++    }
++
++    .sidebar h2 {
++      font-size: 1.05rem;
++      margin: 0;
++    }
++
++    .category-list {
++      display: flex;
++      flex-direction: column;
++      gap: 0.5rem;
++    }
++
++    .category-item {
++      padding: 0.6rem 0.8rem;
++      border-radius: 0.7rem;
++      background: transparent;
++      border: 1px solid transparent;
++      cursor: pointer;
++      text-align: left;
++      font-size: 0.95rem;
++      transition: background 0.2s ease, border 0.2s ease, color 0.2s ease;
++    }
++
++    .category-item.active {
++      background: rgba(59, 130, 246, 0.15);
++      border-color: rgba(59, 130, 246, 0.4);
++      color: var(--accent);
++      font-weight: 600;
++    }
++
++    .category-item:hover {
++      background: rgba(59, 130, 246, 0.1);
++    }
++
++    main {
++      display: flex;
++      flex-direction: column;
++      gap: 1.5rem;
++    }
++
++    .lesson-list-section {
++      background: var(--bg-alt);
++      border-radius: 1rem;
++      box-shadow: 0 10px 30px var(--shadow);
++      padding: 1.2rem;
++    }
++
++    .lesson-list-header {
++      display: flex;
++      justify-content: space-between;
++      align-items: baseline;
++      gap: 1rem;
++      margin-bottom: 1rem;
++    }
++
++    .lesson-list-header h2 {
++      margin: 0;
++      font-size: 1.2rem;
++    }
++
++    .sort-select {
++      padding: 0.4rem 0.6rem;
++      border-radius: 0.6rem;
++      border: 1px solid rgba(15, 23, 42, 0.15);
++      background: var(--bg);
++      color: var(--text);
++    }
++
++    .lesson-list {
++      display: grid;
++      gap: 1rem;
++    }
++
++    .lesson-card {
++      border-radius: 0.9rem;
++      padding: 1rem;
++      background: var(--bg);
++      border: 1px solid rgba(15, 23, 42, 0.08);
++      box-shadow: 0 6px 20px var(--shadow);
++      display: flex;
++      flex-direction: column;
++      gap: 0.5rem;
++      cursor: pointer;
++      transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
++      position: relative;
++    }
++
++    .lesson-card:hover {
++      transform: translateY(-2px);
++      border-color: rgba(59, 130, 246, 0.5);
++      box-shadow: 0 12px 24px var(--shadow);
++    }
++
++    .lesson-card.active {
++      border-color: var(--accent);
++      box-shadow: 0 12px 30px var(--shadow);
++    }
++
++    .lesson-card.completed::after {
++      content: "\2713";
++      position: absolute;
++      top: 0.8rem;
++      right: 0.8rem;
++      background: var(--accent);
++      color: white;
++      width: 1.6rem;
++      height: 1.6rem;
++      border-radius: 50%;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      font-size: 0.9rem;
++      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
++    }
++
++    .lesson-meta {
++      display: flex;
++      gap: 0.6rem;
++      flex-wrap: wrap;
++      font-size: 0.85rem;
++      color: rgba(15, 23, 42, 0.7);
++    }
++
++    .lesson-meta span {
++      background: rgba(59, 130, 246, 0.15);
++      color: var(--accent);
++      padding: 0.2rem 0.5rem;
++      border-radius: 999px;
++    }
++
++    .lesson-summary {
++      margin: 0;
++      font-size: 0.95rem;
++      line-height: 1.5;
++    }
++
++    .lesson-viewer {
++      background: var(--bg-alt);
++      border-radius: 1rem;
++      box-shadow: 0 10px 30px var(--shadow);
++      padding: 1.5rem;
++      display: flex;
++      flex-direction: column;
++      gap: 1rem;
++      min-height: 320px;
++    }
++
++    .viewer-header {
++      display: flex;
++      flex-wrap: wrap;
++      justify-content: space-between;
++      gap: 1rem;
++      align-items: flex-start;
++    }
++
++    .viewer-title {
++      margin: 0;
++      font-size: 1.6rem;
++    }
++
++    .viewer-details {
++      display: flex;
++      gap: 0.8rem;
++      flex-wrap: wrap;
++      font-size: 0.9rem;
++    }
++
++    .viewer-details span {
++      background: rgba(59, 130, 246, 0.15);
++      color: var(--accent);
++      padding: 0.3rem 0.7rem;
++      border-radius: 999px;
++    }
++
++    .complete-btn {
++      align-self: flex-start;
++      background: var(--accent);
++      border: none;
++      color: white;
++      padding: 0.7rem 1.2rem;
++      border-radius: 0.8rem;
++      cursor: pointer;
++      font-size: 0.95rem;
++      transition: background 0.2s ease, transform 0.2s ease;
++    }
++
++    .complete-btn:hover {
++      background: #2563eb;
++      transform: translateY(-1px);
++    }
++
++    .lesson-content {
++      line-height: 1.7;
++    }
++
++    .lesson-content h2,
++    .lesson-content h3 {
++      margin-top: 1.2rem;
++      margin-bottom: 0.6rem;
++    }
++
++    aside.right-panel {
++      background: var(--bg-alt);
++      border-radius: 1rem;
++      box-shadow: 0 10px 30px var(--shadow);
++      padding: 1.2rem;
++      display: flex;
++      flex-direction: column;
++      gap: 1.5rem;
++      max-height: calc(100vh - 140px);
++      overflow-y: auto;
++    }
++
++    .panel-section h3 {
++      margin: 0 0 0.8rem 0;
++      font-size: 1.05rem;
++    }
++
++    .sources-list {
++      list-style: none;
++      padding: 0;
++      margin: 0;
++      display: flex;
++      flex-direction: column;
++      gap: 0.6rem;
++    }
++
++    .sources-list a {
++      color: var(--accent);
++      text-decoration: none;
++      font-weight: 500;
++    }
++
++    .sources-list a:hover {
++      text-decoration: underline;
++    }
++
++    .progress-wrapper {
++      display: flex;
++      flex-direction: column;
++      gap: 0.6rem;
++    }
++
++    .progress-bar {
++      width: 100%;
++      height: 10px;
++      background: rgba(59, 130, 246, 0.1);
++      border-radius: 999px;
++      overflow: hidden;
++    }
++
++    .progress-bar span {
++      display: block;
++      height: 100%;
++      background: var(--accent);
++      border-radius: 999px;
++      transition: width 0.3s ease;
++      width: 0;
++    }
++
++    .about-box {
++      padding: 1rem;
++      background: rgba(59, 130, 246, 0.08);
++      border-radius: 0.8rem;
++      line-height: 1.5;
++      font-size: 0.95rem;
++    }
++
++    .empty-state {
++      text-align: center;
++      padding: 2rem;
++      color: rgba(15, 23, 42, 0.65);
++    }
++
++    footer {
++      text-align: center;
++      padding: 1rem;
++      color: rgba(15, 23, 42, 0.6);
++      font-size: 0.9rem;
++    }
++
++    @media (max-width: 1200px) {
++      .layout {
++        grid-template-columns: 220px 1fr;
++        grid-template-areas:
++          "sidebar main"
++          "sidebar right";
++      }
++
++      aside.right-panel {
++        grid-area: right;
++      }
++
++      main {
++        grid-area: main;
++      }
++
++      aside.sidebar {
++        grid-area: sidebar;
++      }
++    }
++
++    @media (max-width: 980px) {
++      header {
++        flex-wrap: wrap;
++      }
++
++      .search-input {
++        flex: 1 1 100%;
++        order: 3;
++      }
++
++      .menu-btn {
++        display: flex;
++      }
++
++      .layout {
++        grid-template-columns: 1fr;
++        padding: 1rem;
++      }
++
++      aside.sidebar {
++        position: fixed;
++        inset: 0 auto 0 0;
++        width: 260px;
++        height: 100vh;
++        transform: translateX(-110%);
++        transition: transform 0.3s ease;
++        z-index: 25;
++        border-radius: 0;
++      }
++
++      aside.sidebar.open {
++        transform: translateX(0);
++      }
++
++      .sidebar-backdrop {
++        position: fixed;
++        inset: 0;
++        background: rgba(15, 23, 42, 0.4);
++        display: none;
++        z-index: 24;
++      }
++
++      .sidebar-backdrop.visible {
++        display: block;
++      }
++
++      aside.right-panel {
++        order: 3;
++        max-height: none;
++      }
++    }
++
++    @media (max-width: 640px) {
++      .lesson-card {
++        padding: 0.9rem;
++      }
++
++      .viewer-header {
++        flex-direction: column;
++      }
++
++      .complete-btn {
++        width: 100%;
++        text-align: center;
++      }
++    }
++  </style>
++</head>
++<body>
++  <header>
++    <button class="menu-btn" id="menuToggle" aria-label="Toggle categories">☰</button>
++    <div class="brand">Open<span>Learn</span></div>
++    <input type="search" id="searchInput" class="search-input" placeholder="Search lessons by title, topic, or keywords" aria-label="Search lessons" />
++    <button class="toggle-btn" id="themeToggle" aria-label="Toggle light and dark mode">🌙 Dark</button>
++  </header>
++
++  <div class="sidebar-backdrop" id="sidebarBackdrop" role="presentation"></div>
++
++  <div class="layout">
++    <aside class="sidebar" id="sidebar">
++      <h2>Categories</h2>
++      <div class="category-list" id="categoryList"></div>
++    </aside>
++
++    <main>
++      <section class="lesson-list-section">
++        <div class="lesson-list-header">
++          <h2 id="lessonListTitle">All lessons</h2>
++          <label>
++            <span class="sr-only">Sort lessons</span>
++            <select id="sortSelect" class="sort-select">
++              <option value="default">Sort by</option>
++              <option value="title">Title (A-Z)</option>
++              <option value="level">Level (Beginner to Advanced)</option>
++            </select>
++          </label>
++        </div>
++        <div class="lesson-list" id="lessonList"></div>
++      </section>
++
++      <section class="lesson-viewer" id="lessonViewer">
++        <div class="viewer-header">
++          <div>
++            <h1 class="viewer-title" id="viewerTitle">Select a lesson</h1>
++            <div class="viewer-details" id="viewerDetails"></div>
++          </div>
++          <button class="complete-btn" id="completeBtn" disabled>Mark as completed</button>
++        </div>
++        <article class="lesson-content" id="lessonContent">
++          <p>Choose a lesson from the list to begin learning. Each lesson includes verified sources so you can keep exploring.</p>
++        </article>
++      </section>
++    </main>
++
++    <aside class="right-panel">
++      <div class="panel-section">
++        <h3>Sources for this lesson</h3>
++        <ul class="sources-list" id="sourcesList"></ul>
++      </div>
++      <div class="panel-section progress-wrapper">
++        <h3>Your progress</h3>
++        <div id="progressText">0 / 0 lessons completed</div>
++        <div class="progress-bar">
++          <span id="progressBar"></span>
++        </div>
++      </div>
++      <div class="panel-section about-box">
++        <strong>About OpenLearn</strong>
++        <p>Every lesson on OpenLearn is curated with reputable references. Check the sources panel to verify information and continue your exploration.</p>
++      </div>
++    </aside>
++  </div>
++
++  <footer>
++    &copy; <span id="currentYear"></span> OpenLearn. Built with reliable sources for curious minds.
++  </footer>
++
++  <script>
++    // Dataset of lessons with structured content and credible sources
++    const lessons = [
++      {
++        id: "math-fractions-intro",
++        title: "Introduction to Fractions",
++        category: "Math",
++        level: "Beginner",
++        summary: "Understand what fractions represent and how to read them.",
++        content: `
++          <h2>Introduction to Fractions</h2>
++          <p>A fraction represents a part of a whole. It is written with a numerator (top number) and a denominator (bottom number) separated by a line.</p>
++          <h3>Key ideas</h3>
++          <ul>
++            <li><strong>Numerator</strong>: the number of parts being considered.</li>
++            <li><strong>Denominator</strong>: the total number of equal parts that make up the whole.</li>
++            <li>Fractions can be simplified by dividing both the numerator and denominator by their greatest common factor.</li>
++          </ul>
++          <p>Visualize fractions using shapes divided into equal parts or number lines to see how they compare.</p>
++        `,
++        sources: [
++          { title: "CK-12: Fractions", url: "https://www.ck12.org/fraction" },
++          { title: "Khan Academy: Intro to Fractions", url: "https://www.khanacademy.org/math/arithmetic/fraction-arithmetic" }
++        ]
++      },
++      {
++        id: "math-linear-equations",
++        title: "Solving Linear Equations",
++        category: "Math",
++        level: "Intermediate",
++        summary: "Learn how to isolate variables and solve single-variable linear equations.",
++        content: `
++          <h2>Solving Linear Equations</h2>
++          <p>Linear equations have variables raised only to the first power. The general form is <em>ax + b = c</em>.</p>
++          <ol>
++            <li>Use inverse operations to isolate the variable on one side.</li>
++            <li>Perform the same operation on both sides to maintain equality.</li>
++            <li>Check the solution by substituting it back into the original equation.</li>
++          </ol>
++          <p>Example: Solve <em>3x + 5 = 20</em>. Subtract 5 from both sides to get <em>3x = 15</em>, then divide both sides by 3 to find <em>x = 5</em>.</p>
++        `,
++        sources: [
++          { title: "Khan Academy: Linear Equations", url: "https://www.khanacademy.org/math/algebra/one-variable-linear-equations" },
++          { title: "Purplemath: Solving Linear Equations", url: "https://www.purplemath.com/modules/solvelin.htm" }
++        ]
++      },
++      {
++        id: "science-photosynthesis",
++        title: "Basics of Photosynthesis",
++        category: "Science",
++        level: "Beginner",
++        summary: "Discover how plants convert light into chemical energy using chlorophyll.",
++        content: `
++          <h2>Basics of Photosynthesis</h2>
++          <p>Photosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy stored as glucose.</p>
++          <h3>Equation</h3>
++          <p><em>6CO<sub>2</sub> + 6H<sub>2</sub>O + light → C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6O<sub>2</sub></em></p>
++          <h3>Stages</h3>
++          <ul>
++            <li><strong>Light-dependent reactions</strong>: Occur in the thylakoid membranes and produce ATP and NADPH.</li>
++            <li><strong>Calvin cycle</strong>: Takes place in the stroma and synthesizes glucose from carbon dioxide.</li>
++          </ul>
++          <p>Chlorophyll pigments absorb light, primarily in the blue and red wavelengths, powering the process.</p>
++        `,
++        sources: [
++          { title: "Khan Academy: Photosynthesis", url: "https://www.khanacademy.org/science/biology/photosynthesis-in-plants" },
++          { title: "Encyclopedia Britannica: Photosynthesis", url: "https://www.britannica.com/science/photosynthesis" }
++        ]
++      },
++      {
++        id: "science-water-cycle",
++        title: "Understanding the Water Cycle",
++        category: "Science",
++        level: "Beginner",
++        summary: "Follow water as it evaporates, condenses, and precipitates around Earth.",
++        content: `
++          <h2>Understanding the Water Cycle</h2>
++          <p>The water cycle describes how water moves between the atmosphere, land, and oceans through continuous processes.</p>
++          <h3>Main Processes</h3>
++          <ul>
++            <li><strong>Evaporation</strong>: Liquid water turns into vapor due to solar energy.</li>
++            <li><strong>Condensation</strong>: Water vapor cools and forms clouds.</li>
++            <li><strong>Precipitation</strong>: Water falls back to Earth as rain, snow, sleet, or hail.</li>
++            <li><strong>Collection</strong>: Water gathers in bodies like rivers, lakes, and aquifers.</li>
++          </ul>
++          <p>Runoff and infiltration distribute water, maintaining ecosystems and replenishing groundwater supplies.</p>
++        `,
++        sources: [
++          { title: "NASA Earth Observatory: Water Cycle", url: "https://earthobservatory.nasa.gov/features/Water" },
++          { title: "NOAA National Weather Service: Hydrologic Cycle", url: "https://www.weather.gov/jetstream/hydro" }
++        ]
++      },
++      {
++        id: "history-ancient-egypt",
++        title: "Ancient Egypt Overview",
++        category: "History",
++        level: "Beginner",
++        summary: "Explore the geography, society, and achievements of Ancient Egypt.",
++        content: `
++          <h2>Ancient Egypt Overview</h2>
++          <p>Ancient Egypt flourished along the Nile River from around 3100 BCE to 30 BCE, known for monumental architecture and complex society.</p>
++          <h3>Highlights</h3>
++          <ul>
++            <li>The Nile's annual flooding deposited fertile silt, supporting agriculture.</li>
++            <li>Pharaohs ruled as divine kings, supported by administrators and priests.</li>
++            <li>Achievements include the pyramids, hieroglyphic writing, and advances in medicine.</li>
++          </ul>
++          <p>Trade routes connected Egypt to Nubia, the Levant, and the Mediterranean, spreading culture and goods.</p>
++        `,
++        sources: [
++          { title: "British Museum: Ancient Egypt", url: "https://www.britishmuseum.org/collection/galleries/ancient-egypt" },
++          { title: "Encyclopedia Britannica: Ancient Egypt", url: "https://www.britannica.com/place/ancient-Egypt" }
++        ]
++      },
++      {
++        id: "history-wwi-causes",
++        title: "Causes of World War I",
++        category: "History",
++        level: "Intermediate",
++        summary: "Investigate the alliances, militarism, and spark that led to WWI.",
++        content: `
++          <h2>Causes of World War I</h2>
++          <p>World War I began in 1914 after decades of mounting tensions among European powers.</p>
++          <h3>Underlying Factors</h3>
++          <ul>
++            <li><strong>Militarism</strong>: Nations built large armies and navies, increasing suspicion.</li>
++            <li><strong>Alliances</strong>: Triple Entente and Triple Alliance commitments drew countries into conflict.</li>
++            <li><strong>Imperialism</strong>: Competition for colonies fueled rivalries.</li>
++            <li><strong>Nationalism</strong>: Ethnic groups sought self-determination, heightening unrest.</li>
++          </ul>
++          <p>The assassination of Archduke Franz Ferdinand in Sarajevo on June 28, 1914, triggered a chain reaction of mobilizations and declarations of war.</p>
++        `,
++        sources: [
++          { title: "National WWI Museum and Memorial: Origins", url: "https://www.theworldwar.org/learn/wwi/origins-world-war-i" },
++          { title: "Encyclopedia Britannica: World War I", url: "https://www.britannica.com/event/World-War-I" }
++        ]
++      },
++      {
++        id: "programming-html-css",
++        title: "Introduction to HTML & CSS",
++        category: "Programming",
++        level: "Beginner",
++        summary: "Start building web pages using semantic HTML and modern CSS.",
++        content: `
++          <h2>Introduction to HTML & CSS</h2>
++          <p>HTML (HyperText Markup Language) structures content using elements like headings, paragraphs, and links. CSS (Cascading Style Sheets) controls presentation.</p>
++          <h3>Essential Concepts</h3>
++          <ul>
++            <li>Use semantic tags (e.g., <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>) for accessible structure.</li>
++            <li>Apply CSS selectors to style elements with properties such as <code>color</code> and <code>display</code>.</li>
++            <li>Leverage responsive design with flexbox and media queries.</li>
++          </ul>
++          <p>Combine HTML and CSS to craft user-friendly, accessible web experiences.</p>
++        `,
++        sources: [
++          { title: "MDN Web Docs: HTML Basics", url: "https://developer.mozilla.org/docs/Learn/Getting_started_with_the_web/HTML_basics" },
++          { title: "MDN Web Docs: CSS Basics", url: "https://developer.mozilla.org/docs/Learn/Getting_started_with_the_web/CSS_basics" }
++        ]
++      },
++      {
++        id: "programming-js-arrays",
++        title: "JavaScript Array Methods",
++        category: "Programming",
++        level: "Intermediate",
++        summary: "Master useful array methods like map, filter, and reduce.",
++        content: `
++          <h2>JavaScript Array Methods</h2>
++          <p>Arrays in JavaScript come with powerful built-in methods for transformation and analysis.</p>
++          <h3>Core Methods</h3>
++          <ul>
++            <li><code>map()</code>: transforms each element and returns a new array.</li>
++            <li><code>filter()</code>: keeps elements that satisfy a condition.</li>
++            <li><code>reduce()</code>: accumulates values into a single result.</li>
++            <li><code>find()</code>: returns the first matching element.</li>
++          </ul>
++          <p>These methods promote declarative, readable code when handling data collections.</p>
++        `,
++        sources: [
++          { title: "MDN Web Docs: Array", url: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array" },
++          { title: "freeCodeCamp: JavaScript Array Methods", url: "https://www.freecodecamp.org/news/javascript-array-methods-explained/" }
++        ]
++      },
++      {
++        id: "languages-spanish-present",
++        title: "Spanish Present Tense Verbs",
++        category: "Languages",
++        level: "Beginner",
++        summary: "Conjugate regular -ar, -er, and -ir verbs in the present tense.",
++        content: `
++          <h2>Spanish Present Tense Verbs</h2>
++          <p>Regular verbs follow predictable patterns when conjugated in the present tense.</p>
++          <h3>Endings</h3>
++          <ul>
++            <li><strong>-ar verbs</strong>: yo <em>-o</em>, tú <em>-as</em>, él/ella <em>-a</em>, nosotros <em>-amos</em>, vosotros <em>-áis</em>, ellos <em>-an</em>.</li>
++            <li><strong>-er verbs</strong>: yo <em>-o</em>, tú <em>-es</em>, él/ella <em>-e</em>, nosotros <em>-emos</em>, vosotros <em>-éis</em>, ellos <em>-en</em>.</li>
++            <li><strong>-ir verbs</strong>: yo <em>-o</em>, tú <em>-es</em>, él/ella <em>-e</em>, nosotros <em>-imos</em>, vosotros <em>-ís</em>, ellos <em>-en</em>.</li>
++          </ul>
++          <p>Example: <em>hablar</em> → yo <em>hablo</em>, tú <em>hablas</em>; <em>comer</em> → yo <em>como</em>, tú <em>comes</em>.</p>
++        `,
++        sources: [
++          { title: "SpanishDict: Present Tense", url: "https://www.spanishdict.com/guide/spanish-present-tense-forms" },
++          { title: "BBC Languages: Spanish", url: "http://www.bbc.co.uk/languages/spanish/" }
++        ]
++      },
++      {
++        id: "languages-chinese-tones",
++        title: "Mandarin Chinese Tones",
++        category: "Languages",
++        level: "Beginner",
++        summary: "Hear and practice the four tones of Mandarin Chinese for clear pronunciation.",
++        content: `
++          <h2>Mandarin Chinese Tones</h2>
++          <p>Mandarin Chinese is tonal, meaning a syllable's pitch contour affects its meaning.</p>
++          <h3>The Four Main Tones</h3>
++          <ol>
++            <li><strong>First tone</strong>: high and level (e.g., <em>mā</em>, mother).</li>
++            <li><strong>Second tone</strong>: rising, like asking a question (e.g., <em>má</em>, hemp).</li>
++            <li><strong>Third tone</strong>: dipping then rising (e.g., <em>mǎ</em>, horse).</li>
++            <li><strong>Fourth tone</strong>: sharp and falling (e.g., <em>mà</em>, scold).</li>
++          </ol>
++          <p>A neutral fifth tone is light and quick. Practice with audio guides to develop accurate pronunciation.</p>
++        `,
++        sources: [
++          { title: "Yale University: Chinese Language Resources", url: "https://cls.yale.edu/mandarin" },
++          { title: "BBC Bitesize: Mandarin Chinese", url: "https://www.bbc.co.uk/bitesize/topics/z4hx6v4" }
++        ]
++      }
++    ];
++
++    // State management
++    let filteredLessons = [];
++    let selectedLessonId = null;
++    let completedLessons = new Set();
++    let selectedCategory = "All";
++    let currentTheme = "light";
++
++    // DOM references
++    const categoryListEl = document.getElementById("categoryList");
++    const lessonListEl = document.getElementById("lessonList");
++    const lessonListTitleEl = document.getElementById("lessonListTitle");
++    const viewerTitleEl = document.getElementById("viewerTitle");
++    const viewerDetailsEl = document.getElementById("viewerDetails");
++    const lessonContentEl = document.getElementById("lessonContent");
++    const sourcesListEl = document.getElementById("sourcesList");
++    const progressTextEl = document.getElementById("progressText");
++    const progressBarEl = document.getElementById("progressBar");
++    const completeBtn = document.getElementById("completeBtn");
++    const searchInput = document.getElementById("searchInput");
++    const sortSelect = document.getElementById("sortSelect");
++    const themeToggle = document.getElementById("themeToggle");
++    const menuToggle = document.getElementById("menuToggle");
++    const sidebar = document.getElementById("sidebar");
++    const sidebarBackdrop = document.getElementById("sidebarBackdrop");
++
++    // Helper: load progress from localStorage
++    function loadProgress() {
++      try {
++        const saved = JSON.parse(localStorage.getItem("openlearn-progress"));
++        if (Array.isArray(saved)) {
++          completedLessons = new Set(saved);
++        }
++      } catch (error) {
++        console.warn("Could not load progress", error);
++      }
++    }
++
++    // Helper: save progress to localStorage
++    function saveProgress() {
++      localStorage.setItem("openlearn-progress", JSON.stringify(Array.from(completedLessons)));
++    }
++
++    // Helper: load theme from localStorage or system preference
++    function loadTheme() {
++      const savedTheme = localStorage.getItem("openlearn-theme");
++      if (savedTheme === "dark" || savedTheme === "light") {
++        currentTheme = savedTheme;
++      } else {
++        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
++        currentTheme = prefersDark ? "dark" : "light";
++      }
++      applyTheme();
++    }
++
++    // Apply the current theme to the document
++    function applyTheme() {
++      document.body.setAttribute("data-theme", currentTheme);
++      themeToggle.textContent = currentTheme === "dark" ? "☀️ Light" : "🌙 Dark";
++      localStorage.setItem("openlearn-theme", currentTheme);
++    }
++
++    // Toggle between light and dark themes
++    function toggleTheme() {
++      currentTheme = currentTheme === "dark" ? "light" : "dark";
++      applyTheme();
++    }
++
++    // Render category buttons derived from lessons
++    function renderCategories() {
++      const categories = ["All", ...new Set(lessons.map((lesson) => lesson.category))];
++      categoryListEl.innerHTML = "";
++      categories.forEach((category) => {
++        const button = document.createElement("button");
++        button.className = "category-item" + (category === selectedCategory ? " active" : "");
++        button.textContent = category;
++        button.type = "button";
++        button.addEventListener("click", () => {
++          selectedCategory = category;
++          renderCategories();
++          applyFilter();
++          closeSidebar();
++        });
++        categoryListEl.appendChild(button);
++      });
++    }
++
++    // Apply search and category filters to the lessons
++    function applyFilter() {
++      const term = searchInput.value.trim().toLowerCase();
++      filteredLessons = lessons.filter((lesson) => {
++        const matchesTerm =
++          term.length === 0 ||
++          lesson.title.toLowerCase().includes(term) ||
++          lesson.summary.toLowerCase().includes(term) ||
++          lesson.category.toLowerCase().includes(term);
++        const matchesCategory = selectedCategory === "All" || lesson.category === selectedCategory;
++        return matchesTerm && matchesCategory;
++      });
++      sortLessons();
++      renderLessonList();
++      updateLessonListTitle(term);
++      if (filteredLessons.length === 0) {
++        clearViewer();
++      } else if (!selectedLessonId || !filteredLessons.some((lesson) => lesson.id === selectedLessonId)) {
++        selectLesson(filteredLessons[0].id);
++      } else {
++        renderLesson(selectedLessonId);
++      }
++    }
++
++    // Update lesson list title based on filter state
++    function updateLessonListTitle(term) {
++      if (filteredLessons.length === 0) {
++        lessonListTitleEl.textContent = "No lessons found";
++        return;
++      }
++      if (term && selectedCategory !== "All") {
++        lessonListTitleEl.textContent = `Results for "${term}" in ${selectedCategory}`;
++      } else if (term) {
++        lessonListTitleEl.textContent = `Results for "${term}"`;
++      } else if (selectedCategory !== "All") {
++        lessonListTitleEl.textContent = `${selectedCategory} lessons`;
++      } else {
++        lessonListTitleEl.textContent = "All lessons";
++      }
++    }
++
++    // Sort lessons based on selected option
++    function sortLessons() {
++      const sortValue = sortSelect.value;
++      if (sortValue === "title") {
++        filteredLessons.sort((a, b) => a.title.localeCompare(b.title));
++      } else if (sortValue === "level") {
++        const order = { Beginner: 1, Intermediate: 2, Advanced: 3 };
++        filteredLessons.sort((a, b) => (order[a.level] || 99) - (order[b.level] || 99) || a.title.localeCompare(b.title));
++      }
++    }
++
++    // Render the list of lesson cards
++    function renderLessonList() {
++      lessonListEl.innerHTML = "";
++      if (filteredLessons.length === 0) {
++        const emptyMessage = document.createElement("div");
++        emptyMessage.className = "empty-state";
++        emptyMessage.textContent = "No lessons found. Try another keyword.";
++        lessonListEl.appendChild(emptyMessage);
++        return;
++      }
++
++      filteredLessons.forEach((lesson) => {
++        const card = document.createElement("article");
++        card.className = "lesson-card" + (lesson.id === selectedLessonId ? " active" : "");
++        if (completedLessons.has(lesson.id)) {
++          card.classList.add("completed");
++        }
++        card.innerHTML = `
++          <h3>${lesson.title}</h3>
++          <p class="lesson-summary">${lesson.summary}</p>
++          <div class="lesson-meta">
++            <span>${lesson.category}</span>
++            <span>${lesson.level}</span>
++          </div>
++        `;
++        card.addEventListener("click", () => selectLesson(lesson.id));
++        lessonListEl.appendChild(card);
++      });
++    }
++
++    // Select a lesson by ID and render it
++    function selectLesson(id) {
++      selectedLessonId = id;
++      renderLesson(id);
++      renderLessonList();
++    }
++
++    // Render lesson details in the viewer and sources panel
++    function renderLesson(id) {
++      const lesson = lessons.find((item) => item.id === id);
++      if (!lesson) {
++        clearViewer();
++        return;
++      }
++
++      viewerTitleEl.textContent = lesson.title;
++      viewerDetailsEl.innerHTML = `
++        <span>${lesson.category}</span>
++        <span>${lesson.level}</span>
++      `;
++      lessonContentEl.innerHTML = lesson.content;
++      renderSources(lesson.sources);
++      completeBtn.disabled = false;
++      completeBtn.textContent = completedLessons.has(lesson.id)
++        ? "Completed ✔"
++        : "Mark as completed";
++    }
++
++    // Clear the lesson viewer when no results are available
++    function clearViewer() {
++      selectedLessonId = null;
++      viewerTitleEl.textContent = "Select a lesson";
++      viewerDetailsEl.innerHTML = "";
++      lessonContentEl.innerHTML = `<p>No lesson selected. Adjust your search or choose another category.</p>`;
++      sourcesListEl.innerHTML = "";
++      completeBtn.disabled = true;
++      completeBtn.textContent = "Mark as completed";
++    }
++
++    // Render the sources list for the selected lesson
++    function renderSources(sources) {
++      sourcesListEl.innerHTML = "";
++      if (!sources || sources.length === 0) {
++        const item = document.createElement("li");
++        item.textContent = "Sources: not provided.";
++        sourcesListEl.appendChild(item);
++        return;
++      }
++      sources.forEach((source) => {
++        const item = document.createElement("li");
++        if (source.url) {
++          const link = document.createElement("a");
++          link.href = source.url;
++          link.target = "_blank";
++          link.rel = "noopener";
++          link.textContent = source.title;
++          item.appendChild(link);
++        } else {
++          item.textContent = source.title;
++        }
++        sourcesListEl.appendChild(item);
++      });
++    }
++
++    // Toggle completion status for the selected lesson
++    function toggleCompletion() {
++      if (!selectedLessonId) return;
++      if (completedLessons.has(selectedLessonId)) {
++        completedLessons.delete(selectedLessonId);
++      } else {
++        completedLessons.add(selectedLessonId);
++      }
++      saveProgress();
++      renderLessonList();
++      renderLesson(selectedLessonId);
++      updateProgress();
++    }
++
++    // Update the progress text and bar
++    function updateProgress() {
++      const total = lessons.length;
++      const completed = completedLessons.size;
++      progressTextEl.textContent = `${completed} / ${total} lessons completed`;
++      const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
++      progressBarEl.style.width = `${percentage}%`;
++    }
++
++    // Sidebar controls for mobile
++    function openSidebar() {
++      sidebar.classList.add("open");
++      sidebarBackdrop.classList.add("visible");
++    }
++
++    function closeSidebar() {
++      sidebar.classList.remove("open");
++      sidebarBackdrop.classList.remove("visible");
++    }
++
++    // Initialize the application
++    function init() {
++      loadProgress();
++      loadTheme();
++      renderCategories();
++      filteredLessons = [...lessons];
++      renderLessonList();
++      updateProgress();
++      if (lessons.length > 0) {
++        selectLesson(lessons[0].id);
++      }
++      document.getElementById("currentYear").textContent = new Date().getFullYear();
++    }
++
++    // Event listeners
++    searchInput.addEventListener("input", () => applyFilter());
++    sortSelect.addEventListener("change", () => applyFilter());
++    completeBtn.addEventListener("click", toggleCompletion);
++    themeToggle.addEventListener("click", toggleTheme);
++    menuToggle.addEventListener("click", openSidebar);
++    sidebarBackdrop.addEventListener("click", closeSidebar);
++
++    window.addEventListener("resize", () => {
++      if (window.innerWidth > 980) {
++        closeSidebar();
++      }
++    });
++
++    document.addEventListener("keydown", (event) => {
++      if (event.key === "Escape") {
++        closeSidebar();
++      }
++    });
++
++    // Kickstart the interface once DOM content is loaded
++    document.addEventListener("DOMContentLoaded", init);
++  </script>
++</body>
++</html>
